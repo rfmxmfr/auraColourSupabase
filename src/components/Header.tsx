@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Logo } from './icons/Logo';
 import { logout } from '@/services/authService';
 import { useAuth } from '@/hooks/useAuth';
-import { User } from 'firebase/auth';
+import { User } from '@supabase/supabase-js';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { useRouter } from 'next/navigation';

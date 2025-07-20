@@ -1,8 +1,7 @@
 
 'use client';
 import { useEffect, useState } from 'react';
-import { doc, getDoc, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Loader2, Palette, Shirt, BookOpen, Check, Sparkles, AlertTriangle } from 'lucide-react';
@@ -36,15 +35,19 @@ export default function ReportPage({ params }: { params: { id: string } }) {
     if (params.id) {
       const fetchReport = async () => {
         try {
-          const docRef = doc(db, 'submissions', params.id);
-          const docSnap = await getDoc(docRef);
+          const { data, error } = await supabase
+            .from('submissions')
+            .select('*')
+            .eq('id', params.id)
+            .single();
 
-          if (docSnap.exists()) {
-            const data = docSnap.data();
+          if (error) throw error;
+
+          if (data) {
             if(data.status === 'completed') {
               setReport({
-                colorAnalysis: data.colorAnalysis,
-                styleReport: data.styleReport,
+                colorAnalysis: data.color_analysis,
+                styleReport: data.style_report,
               });
             } else {
               setError("Your report is still being generated. Please check back in a few minutes.");

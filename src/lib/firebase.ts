@@ -1,39 +1,13 @@
-// src/lib/firebase.ts
-import { initializeApp, getApp, getApps, FirebaseApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { getPerformance } from "firebase/performance";
+// src/lib/firebase.ts - Compatibility layer for Supabase migration
+// This file is kept for backward compatibility during migration
+// It re-exports from supabase.ts to minimize code changes in other files
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-};
+import { supabase, getServiceSupabase } from './supabase';
 
-let app: FirebaseApp;
-let auth: ReturnType<typeof getAuth>;
-let db: ReturnType<typeof getFirestore>;
+// Export supabase client as db for compatibility with old Firebase code
+export const db = supabase;
+export const auth = supabase.auth;
+export const app = { name: 'supabase-app' };
 
-// Singleton pattern to initialize Firebase only once
-if (!getApps().length) {
-  app = initializeApp(firebaseConfig);
-} else {
-  app = getApp();
-}
-
-auth = getAuth(app);
-db = getFirestore(app);
-
-// Initialize Performance Monitoring only on the client side
-if (typeof window !== 'undefined') {
-    try {
-        getPerformance(app);
-    } catch (error) {
-        console.error("Failed to initialize Firebase Performance", error);
-    }
-}
-
-export { app, db, auth };
+// Export the service client for admin operations
+export const serviceClient = getServiceSupabase();

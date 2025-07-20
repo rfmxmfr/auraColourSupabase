@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { cn } from '@/lib/utils';
-import { where } from 'firebase/firestore';
+
 
 const statusConfig: { [key in Exclude<SubmissionStatus, 'draft' | 'pending_payment'>]: { title: string; color: string } } = {
     paid: { title: "Paid & Pending", color: "bg-yellow-500" },

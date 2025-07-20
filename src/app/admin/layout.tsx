@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Bell, Home, LineChart, Package, Package2, Settings, ShoppingCart, Users, Palette, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { User } from 'firebase/auth';
+import { User } from '@supabase/supabase-js';
 import { useAuth, UserWithRole } from '@/hooks/useAuth';
 
 import { Badge } from '@/components/ui/badge';
