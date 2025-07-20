@@ -11,6 +11,22 @@ if (!supabaseUrl || !supabaseServiceKey) {
   process.exit(1);
 }
 
+// Check for placeholder values
+if (supabaseUrl === 'your_supabase_url' || supabaseServiceKey === 'your_supabase_service_role_key') {
+  console.error('ERROR: You need to replace the placeholder values in .env.local with your actual Supabase credentials.');
+  console.error('Please update the .env.local file with your Supabase URL and service role key.');
+  process.exit(1);
+}
+
+// Validate URL format
+try {
+  new URL(supabaseUrl);
+} catch (error) {
+  console.error(`ERROR: Invalid Supabase URL format: ${supabaseUrl}`);
+  console.error('Please make sure your NEXT_PUBLIC_SUPABASE_URL is a valid URL (e.g., https://your-project.supabase.co)');
+  process.exit(1);
+}
+
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 // Create admin user
@@ -21,35 +37,44 @@ async function createAdminUser() {
     const password = 'Admin123!';
     
     // Create the user in Supabase Auth
-    const { data: authUser, error: authError } = await supabase.auth.admin.createUser({
+    const { data, error: authError } = await supabase.auth.signUp({
       email,
       password,
-      email_confirm: true
+      options: {
+        emailRedirectTo: 'https://example.com/welcome'
+      }
     });
     
     if (authError) {
       throw authError;
     }
     
+    if (!data || !data.user) {
+      throw new Error('User creation failed - no user data returned');
+    }
+    
     // Add admin role to the user in Supabase
     const { error: profileError } = await supabase
       .from('users')
       .insert({
-        id: authUser.user.id,
+        id: data.user.id,
         email: email,
         role: 'admin',
-        created_at: new Date().toISOString()
+        status: 'active',
+        profile_data: { isSetupComplete: true }
       });
     
     if (profileError) {
       throw profileError;
     }
     
-    console.log('Admin user created successfully:', authUser.user.id);
+    console.log('Admin user created successfully:', data.user.id);
     console.log('Email:', email);
     console.log('Password:', password);
+    return data.user.id;
   } catch (error) {
-    console.error('Error creating admin user:', error.message);
+    console.error('Error creating admin user:', error.message || error);
+    return null;
   }
 }
 

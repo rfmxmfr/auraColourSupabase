@@ -1,6 +1,6 @@
 
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,11 +21,12 @@ const formSchema = z.object({
   password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
 });
 
-export default function LoginPage() {
+function LoginContent() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [redirectPath, setRedirectPath] = useState('/admin');
+  const [redirectPath, setRedirectPath] = useState('/admin/dashboard');
   
   useEffect(() => {
     const redirect = searchParams.get('redirect');
@@ -43,20 +44,26 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsLoading(true);
-    const result = await signInWithEmail(values.email, values.password);
-    setIsLoading(false);
-
-    if (result.success) {
-      toast.success('Login successful!');
+    try {
+      setIsLoading(true);
+      const result = await signInWithEmail(values.email, values.password);
       
-      // Add a small delay to allow Supabase auth state to propagate
-      setTimeout(() => {
-        router.push(redirectPath);
-      }, 500);
-    } else {
-      toast.error('Login Failed', {
-        description: result.error,
+      if (result.success) {
+        toast.success('Login successful!');
+        setIsRedirecting(true);
+        
+        // Force immediate navigation with direct window location
+        window.location.href = redirectPath;
+      } else {
+        setIsLoading(false);
+        toast.error('Login Failed', {
+          description: result.error,
+        });
+      }
+    } catch (error) {
+      setIsLoading(false);
+      toast.error('Login Error', {
+        description: error instanceof Error ? error.message : 'An unknown error occurred',
       });
     }
   };
@@ -99,8 +106,8 @@ export default function LoginPage() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Login'}
+                <Button type="submit" className="w-full" disabled={isLoading || isRedirecting}>
+                  {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : isRedirecting ? 'Redirecting...' : 'Login'}
                 </Button>
               </form>
             </Form>
@@ -115,5 +122,31 @@ export default function LoginPage() {
       </main>
       <Footer />
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen flex-col bg-muted/40">
+        <Header />
+        <main className="flex-grow container mx-auto px-4 py-8 md:py-12 flex items-center justify-center">
+          <Card className="w-full max-w-sm">
+            <CardHeader>
+              <CardTitle>Login</CardTitle>
+              <CardDescription>Loading...</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center py-8">
+                <Loader2 className="h-8 w-8 animate-spin" />
+              </div>
+            </CardContent>
+          </Card>
+        </main>
+        <Footer />
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }

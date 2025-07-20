@@ -1,0 +1,102 @@
+/* Enhanced Questionnaire Styles */
+
+.questionnaire-container {
+  --questionnaire-shadow: 0 10px 30px rgba(var(--primary), 0.1);
+}
+
+/* Animated progress steps */
+.step-indicator {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.step-indicator::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 3px;
+  background-color: hsl(var(--primary));
+  transition: width 0.3s ease;
+}
+
+.step-indicator.active::after {
+  width: 100%;
+}
+
+/* Card hover effects */
+.option-card {
+  transition: all 0.2s ease;
+  transform-origin: center;
+}
+
+.option-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--questionnaire-shadow);
+}
+
+.option-card.selected {
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* Photo upload area */
+.photo-upload-area {
+  background-image: 
+    linear-gradient(45deg, 
+      rgba(var(--primary), 0.05) 25%, 
+      transparent 25%, 
+      transparent 50%, 
+      rgba(var(--primary), 0.05) 50%, 
+      rgba(var(--primary), 0.05) 75%, 
+      transparent 75%, 
+      transparent
+    );
+  background-size: 20px 20px;
+  animation: photo-upload-bg 30s linear infinite;
+}
+
+@keyframes photo-upload-bg {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 40px 40px;
+  }
+}
+
+/* Button animations */
+.questionnaire-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.questionnaire-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: transform 0.5s, opacity 0.3s;
+}
+
+.questionnaire-btn:active::after {
+  transform: translate(-50%, -50%) scale(2);
+  opacity: 1;
+  transition: 0s;
+}
+
+/* Review section enhancements */
+.review-card {
+  transition: all 0.3s ease;
+}
+
+.review-card:hover {
+  box-shadow: var(--questionnaire-shadow);
+}

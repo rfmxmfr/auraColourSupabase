@@ -31,16 +31,22 @@ export default function AdminLayout({
   const { user, loading } = useAuth();
   
   useEffect(() => {
-    if (!loading) {
+    const checkAuth = async () => {
+      if (!loading) {
         if (!user) {
-            toast.error("Access Denied", { description: "Please log in to view the admin panel." });
-            router.push('/login?redirect=/admin/dashboard');
+          console.log('No user found in admin layout, redirecting to login');
+          window.location.href = '/login?redirect=' + pathname;
         } else if (user.role !== 'admin') {
-            toast.error("Access Denied", { description: "You do not have permission to view this page." });
-            router.push('/');
+          console.log('User is not admin, redirecting to home');
+          window.location.href = '/';
+        } else {
+          console.log('User authenticated as admin:', user.id);
         }
-    }
-  }, [user, loading, router]);
+      }
+    };
+    
+    checkAuth();
+  }, [user, loading, pathname]);
 
 
   const navItems = [

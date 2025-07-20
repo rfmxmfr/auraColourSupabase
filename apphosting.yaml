@@ -1,7 +1,12 @@
-# Settings to manage and configure a Firebase App Hosting backend.
-# https://firebase.google.com/docs/app-hosting/configure
-
-runConfig:
-  # Increase this value if you'd like to automatically spin up
-  # more instances in response to increased traffic.
-  maxInstances: 1
+name: aura-colour-supabase
+env:
+  - name: NEXT_PUBLIC_SUPABASE_URL
+    value: "https://vqamddepfymdtfyphran.supabase.co"
+  - name: NEXT_PUBLIC_SUPABASE_ANON_KEY
+    value: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxYW1kZGVwZnltZHRmeXBocmFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMDMyMDMsImV4cCI6MjA2ODU3OTIwM30.Ax3ZrrkL_qorpjy4KXgHAH76WK-NNw9-EehKO39cd0Y"
+build:
+  command: npm run build
+  output: .next
+run:
+  command: npm start
+  port: 3000

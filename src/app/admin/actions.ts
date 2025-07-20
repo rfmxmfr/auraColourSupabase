@@ -5,8 +5,7 @@ import { analyzeColor } from '@/ai/flows/color-analysis';
 import { generateStyleReport } from '@/ai/flows/style-report-generator';
 import { detectFace } from '@/ai/flows/face-detection';
 import { updateSubmissionStatus, getSubmission, SubmissionStatus } from '@/services/submissionService';
-import { db } from '@/lib/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { supabase } from '@/lib/supabase';
 
 export async function generateReportAction(submissionId: string, questionnaireResponses: string, photoDataUri: string) {
     try {
@@ -45,15 +44,20 @@ export async function generateReportAction(submissionId: string, questionnaireRe
         
         console.log("Style report generation successful.");
 
-        // 3. Save the report to Firestore
-        const submissionRef = doc(db, 'submissions', submissionId);
-        await updateDoc(submissionRef, {
-            colorAnalysis: colorAnalysisResult,
-            styleReport: styleReportResult,
-            status: 'completed',
-        });
+        // 3. Save the report to Supabase
+        const { error } = await supabase
+            .from('submissions')
+            .update({
+                color_analysis: colorAnalysisResult,
+                style_report: styleReportResult,
+                status: 'completed',
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', submissionId);
+            
+        if (error) throw error;
         
-        console.log("Report saved to Firestore.");
+        console.log("Report saved to Supabase.");
 
         return { success: true, report: { ...colorAnalysisResult, ...styleReportResult } };
     } catch (error: any) {

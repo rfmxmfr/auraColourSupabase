@@ -40,7 +40,7 @@ const submissionFlow = ai.defineFlow(
     outputSchema: SubmissionOutputSchema,
   },
   async (input) => {
-    // Save the submission to Firestore.
+    // Save the submission to Supabase
     const submissionId = await saveSubmission(input.questionnaireResponses, input.photoDataUri);
     
     // This is where you would trigger a notification for the admin/stylist.

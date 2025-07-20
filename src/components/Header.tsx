@@ -66,7 +66,10 @@ export function Header() {
                         </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onSelect={() => router.push('/admin')}>Dashboard</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => router.push('/dashboard')}>My Dashboard</DropdownMenuItem>
+                        {user.role === 'admin' && (
+                          <DropdownMenuItem onSelect={() => router.push('/admin')}>Admin Dashboard</DropdownMenuItem>
+                        )}
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onSelect={handleLogout}>
                          Log out

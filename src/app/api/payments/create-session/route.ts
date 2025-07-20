@@ -9,7 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export async function POST(req: Request) {
   try {
     const origin = req.headers.get('origin') || 'http://localhost:3000';
-    const { submissionId } = await req.json();
+    const { submissionId, email, isAnonymous } = await req.json();
 
     if (!submissionId) {
         return new NextResponse('Bad Request: submissionId is required', { status: 400 });
@@ -29,10 +29,12 @@ export async function POST(req: Request) {
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `${origin}/confirmation?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}/confirmation?session_id={CHECKOUT_SESSION_ID}&submission_id=${submissionId}${isAnonymous ? '&anonymous=true' : ''}${email ? `&email=${encodeURIComponent(email)}` : ''}`,
       cancel_url: `${origin}/questionnaire`,
       metadata: {
         submissionId: submissionId, // Pass the submissionId to Stripe
+        email: email || '',
+        isAnonymous: isAnonymous ? 'true' : 'false',
       },
     });
     

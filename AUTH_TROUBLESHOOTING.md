@@ -2,57 +2,57 @@
 
 This guide helps resolve common authentication issues with the AuraStyle AI application.
 
-## Common Error: "Firebase: Error (auth/invalid-credential)"
+## Common Error: "Invalid login credentials"
 
-This error occurs when the provided email and password don't match any user in the Firebase authentication system.
+This error occurs when the provided email and password don't match any user in the Supabase authentication system.
 
 ### Solution:
 
 1. **Create a test user** using the provided script:
    ```bash
-   ./create-user.sh
+   node create-test-user.js
    ```
    This will create a test user with email `test@example.com` and password `Test123!`
 
 2. **Create an admin user** using the provided script:
    ```bash
-   ./create-admin.sh
+   node create-admin-user.js
    ```
    This will create an admin user with email `admin@aurastyle.ai` and password `Admin123!`
 
-3. **Check Firebase Authentication Console**:
-   - Go to the Firebase Console
+3. **Check Supabase Authentication Console**:
+   - Go to the Supabase Dashboard
    - Select your project
    - Navigate to Authentication > Users
    - Verify that your users are listed there
 
 ## Other Common Authentication Issues
 
-### 1. "Firebase: Error (auth/invalid-api-key)"
+### 1. "Invalid API key"
 
-This error occurs when the Firebase API key is invalid or missing.
+This error occurs when the Supabase API key is invalid or missing.
 
 **Solution**:
-- Check that your `.env.local` file contains the correct `NEXT_PUBLIC_FIREBASE_API_KEY`
-- Verify that the API key is enabled in the Firebase Console
+- Check that your `.env.local` file contains the correct `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- Verify that the API key is enabled in the Supabase Dashboard
 
-### 2. "Firebase: Error (auth/user-not-found)"
+### 2. "User not found"
 
-This error occurs when trying to sign in with an email that doesn't exist in Firebase Authentication.
+This error occurs when trying to sign in with an email that doesn't exist in Supabase Authentication.
 
 **Solution**:
 - Create a new user with the email you're trying to use
 - Check for typos in the email address
 
-### 3. "Firebase: Error (auth/wrong-password)"
+### 3. "Invalid password"
 
 This error occurs when the password is incorrect for the given email.
 
 **Solution**:
-- Reset the password for the user in the Firebase Console
+- Reset the password for the user in the Supabase Dashboard
 - Make sure you're using the correct password
 
-### 4. "Firebase: Error (auth/email-already-in-use)"
+### 4. "Email already in use"
 
 This error occurs when trying to create a user with an email that already exists.
 
@@ -64,7 +64,7 @@ This error occurs when trying to create a user with an email that already exists
 
 If you need to reset a user's password:
 
-1. Go to the Firebase Console
+1. Go to the Supabase Dashboard
 2. Navigate to Authentication > Users
 3. Find the user and click the three dots menu
 4. Select "Reset Password"
