@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Logo } from './icons/Logo';
-import { logout } from '@/services/authService';
+import { logout } from '@/services/clientAuthService';
 import { useAuth } from '@/hooks/useAuth';
 import { User } from '@supabase/supabase-js';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
